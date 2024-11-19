@@ -8,16 +8,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
-import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 
-export const columns: ColumnDef<any>[] = [
+export const columns: (
+  handleEditOrder: (orderId: string) => void,
+  deleteOrder: (id: string) => void
+) => ColumnDef<any>[] = (handleEditOrder, deleteOrder) => [
   {
     accessorKey: 'id',
     header: 'Order ID',
   },
   {
-    accessorKey: 'customer.name',
+    accessorKey: 'customerName',
     header: 'Customer',
   },
   {
@@ -54,10 +56,10 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'data',
     header: 'Date',
     cell: ({ row }) => {
-      return new Date(row.getValue('createdAt')).toLocaleDateString();
+      return new Date(row.getValue('data')).toLocaleDateString();
     },
   },
   {
@@ -75,16 +77,15 @@ export const columns: ColumnDef<any>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                navigator.clipboard.writeText(order.id);
-                toast.success('Order ID copied to clipboard');
-              }}
-            >
-              Copy ID
+            <DropdownMenuItem onClick={() => handleEditOrder(order.id)}>
+              Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>View Details</DropdownMenuItem>
-            <DropdownMenuItem>Update Status</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => deleteOrder(order.id)}
+              className="text-red-600"
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -29,54 +29,79 @@ interface TransactionFormProps {
 
 export function TransactionForm({ onSuccess, initialData }: TransactionFormProps) {
   const queryClient = useQueryClient();
+
   const form = useForm<z.infer<typeof transactionSchema>>({
     resolver: zodResolver(transactionSchema),
     defaultValues: initialData || {
-      type: 'income',
-      amount: 0,
-      description: '',
+      tipo: 'Entrada', // Valor padrão
+      valor: 0,
+      data: '',
+      produtoId: '',
+      pedidoId: '',
     },
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: async (values: z.infer<typeof transactionSchema>) => {
-      const res = await fetch('/api/transactions', {
-        method: 'POST',
+      const url = initialData
+        ? `http://localhost:3000/transacoes/${initialData.id}`
+        : 'http://localhost:3000/transacoes';
+      const method = initialData ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
-      if (!res.ok) throw new Error('Failed to create transaction');
+      if (!res.ok) throw new Error('Failed to save transaction');
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      toast.success('Transaction created successfully');
-      form.reset();
+      queryClient.invalidateQueries(['transactions']);
+      toast.success(`Transaction ${initialData ? 'updated' : 'created'} successfully`);
       onSuccess?.();
     },
     onError: () => {
-      toast.error('Failed to create transaction');
+      toast.error(`Failed to ${initialData ? 'update' : 'create'} transaction`);
     },
   });
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => mutate(data))} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit((data) => mutate(data))}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
-          name="type"
+          name="data"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date</FormLabel>
+              <FormControl>
+                <Input type="date" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="tipo"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select transaction type" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="income">Income</SelectItem>
-                  <SelectItem value="expense">Expense</SelectItem>
+                  <SelectItem value="Entrada">Entrada</SelectItem>
+                  <SelectItem value="Saída">Saída</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -85,7 +110,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         />
         <FormField
           control={form.control}
-          name="amount"
+          name="valor"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Amount</FormLabel>
@@ -93,7 +118,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
                 <Input
                   type="number"
                   {...field}
-                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -102,19 +127,46 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         />
         <FormField
           control={form.control}
-          name="description"
+          name="produtoId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Product ID</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
-          {isPending ? 'Creating...' : 'Create Transaction'}
+        <FormField
+          control={form.control}
+          name="pedidoId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Order ID</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={isLoading}>
+          {isLoading
+            ? initialData
+              ? 'Updating...'
+              : 'Creating...'
+            : initialData
+            ? 'Update Transaction'
+            : 'Create Transaction'}
         </Button>
       </form>
     </Form>

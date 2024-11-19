@@ -42,12 +42,6 @@ const routes = [
     href: '/suppliers',
   },
   {
-    label: 'Inventory',
-    icon: Box,
-    color: 'text-yellow-700',
-    href: '/inventory',
-  },
-  {
     label: 'Transactions',
     icon: CircleDollarSign,
     color: 'text-emerald-500',

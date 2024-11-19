@@ -15,15 +15,22 @@ import { columns } from '@/components/tables/transactions-columns';
 
 export default function Transactions() {
   const [open, setOpen] = useState(false);
+
   const { data: transactions, isLoading } = useQuery({
     queryKey: ['transactions'],
     queryFn: async () => {
-      const res = await fetch('/api/transactions');
-      return res.json();
+      const res = await fetch('http://localhost:3000/transacoes');
+      if (!res.ok) {
+        throw new Error('Failed to fetch transactions');
+      }
+      const data = await res.json();
+      console.log('Fetched transactions:', data); // Log para depuração
+      return data.transacoes; // Certifique-se de acessar a propriedade correta
     },
   });
-
+  
   if (isLoading) return <div>Loading...</div>;
+  if (!transactions.length) return <div>No transactions found</div>;
 
   return (
     <div className="p-8 space-y-4">

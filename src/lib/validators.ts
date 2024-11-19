@@ -44,8 +44,12 @@ export const orderSchema = z.object({
 });
 
 export const transactionSchema = z.object({
-  type: z.enum(['income', 'expense']),
-  amount: z.number().positive(),
-  description: z.string().min(2),
-  orderId: z.string().optional(),
+  data: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data deve estar no formato YYYY-MM-DD')
+    .nonempty('A data é obrigatória'),
+  tipo: z.enum(['Entrada', 'Saída'], 'Tipo deve ser Entrada ou Saída'),
+  valor: z.number().positive('O valor deve ser maior que 0'),
+  produtoId: z.number().int().positive('O ID do produto deve ser um número inteiro positivo'),
+  pedidoId: z.number().int().nullable().optional(),
 });

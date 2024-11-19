@@ -10,7 +10,6 @@ const Products = lazy(() => import('./pages/products'));
 const Orders = lazy(() => import('./pages/orders'));
 const Customers = lazy(() => import('./pages/customers'));
 const Suppliers = lazy(() => import('./pages/suppliers'));
-const Inventory = lazy(() => import('./pages/inventory'));
 const Transactions = lazy(() => import('./pages/transactions'));
 
 function App() {
@@ -36,7 +35,6 @@ function App() {
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/suppliers" element={<Suppliers />} />
-                <Route path="/inventory" element={<Inventory />} />
                 <Route path="/transactions" element={<Transactions />} />
               </Routes>
             </Suspense>
