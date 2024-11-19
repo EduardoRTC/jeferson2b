@@ -52,16 +52,16 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
-      if (!res.ok) throw new Error('Failed to save transaction');
+      if (!res.ok) throw new Error('Falha ao salvar transação');
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['transactions']);
-      toast.success(`Transaction ${initialData ? 'updated' : 'created'} successfully`);
+      toast.success(`Transação ${initialData ? 'atualizada' : 'criada'} com sucesso`);
       onSuccess?.();
     },
     onError: () => {
-      toast.error(`Failed to ${initialData ? 'update' : 'create'} transaction`);
+      toast.error(`Falha ao ${initialData ? 'atualizar' : 'criar'} transação`);
     },
   });
 
@@ -76,7 +76,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           name="data"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Date</FormLabel>
+              <FormLabel>Data</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -89,14 +89,14 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           name="tipo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>Tipo</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 value={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select transaction type" />
+                    <SelectValue placeholder="Selecione o tipo de transação" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -113,7 +113,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           name="valor"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amount</FormLabel>
+              <FormLabel>Valor</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -130,7 +130,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           name="produtoId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product ID</FormLabel>
+              <FormLabel>ID do Produto</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -147,7 +147,7 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
           name="pedidoId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Order ID</FormLabel>
+              <FormLabel>ID do Pedido</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -162,11 +162,11 @@ export function TransactionForm({ onSuccess, initialData }: TransactionFormProps
         <Button type="submit" disabled={isLoading}>
           {isLoading
             ? initialData
-              ? 'Updating...'
-              : 'Creating...'
+              ? 'Atualizando...'
+              : 'Criando...'
             : initialData
-            ? 'Update Transaction'
-            : 'Create Transaction'}
+            ? 'Atualizar Transação'
+            : 'Criar Transação'}
         </Button>
       </form>
     </Form>

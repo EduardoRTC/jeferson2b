@@ -15,7 +15,7 @@ export const columns: (
 ) => ColumnDef<any>[] = (handleEditSupplier, deleteSupplier) => [
   {
     accessorKey: 'nome',
-    header: 'Name',
+    header: 'Nome',
   },
   {
     accessorKey: 'cnpj',
@@ -23,11 +23,11 @@ export const columns: (
   },
   {
     accessorKey: 'contato',
-    header: 'Contact',
+    header: 'Contato',
   },
   {
     accessorKey: 'endereco',
-    header: 'Address',
+    header: 'Endereço',
   },
   {
     id: 'actions',
@@ -41,13 +41,15 @@ export const columns: (
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleEditSupplier(supplier.id)}>Edit</DropdownMenuItem>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => handleEditSupplier(supplier.id)}>
+              Editar
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => deleteSupplier(supplier.id)}
               className="text-red-600"
             >
-              Delete
+              Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

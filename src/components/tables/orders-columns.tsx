@@ -16,20 +16,20 @@ export const columns: (
 ) => ColumnDef<any>[] = (handleEditOrder, deleteOrder) => [
   {
     accessorKey: 'id',
-    header: 'Order ID',
+    header: 'ID do Pedido',
   },
   {
     accessorKey: 'customerName',
-    header: 'Customer',
+    header: 'Cliente',
   },
   {
     accessorKey: 'total',
     header: 'Total',
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('total'));
-      return new Intl.NumberFormat('en-US', {
+      return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'BRL',
       }).format(amount);
     },
   },
@@ -41,25 +41,31 @@ export const columns: (
       return (
         <Badge
           variant={
-            status === 'completed'
+            status === 'concluído'
               ? 'default'
-              : status === 'processing'
+              : status === 'processando'
               ? 'secondary'
-              : status === 'pending'
+              : status === 'pendente'
               ? 'outline'
               : 'destructive'
           }
         >
-          {status}
+          {status === 'completed'
+            ? 'Concluído'
+            : status === 'processing'
+            ? 'Processando'
+            : status === 'pending'
+            ? 'Pendente'
+            : 'Cancelado'}
         </Badge>
       );
     },
   },
   {
     accessorKey: 'data',
-    header: 'Date',
+    header: 'Data',
     cell: ({ row }) => {
-      return new Date(row.getValue('data')).toLocaleDateString();
+      return new Date(row.getValue('data')).toLocaleDateString('pt-BR');
     },
   },
   {
@@ -71,20 +77,20 @@ export const columns: (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => handleEditOrder(order.id)}>
-              Edit
+              Editar
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => deleteOrder(order.id)}
               className="text-red-600"
             >
-              Delete
+              Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

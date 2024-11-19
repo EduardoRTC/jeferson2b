@@ -59,7 +59,7 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
         quantidade: values.quantidade,
         imagem: values.imagem,
       };
-    
+
       const url = initialData
         ? `http://localhost:3000/products/${initialData.id}`
         : 'http://localhost:3000/products';
@@ -73,7 +73,7 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
 
       if (!res.ok) {
         const errorDetails = await res.json();
-        throw new Error(errorDetails.error || `Failed to ${method === 'POST' ? 'create' : 'update'} product`);
+        throw new Error(errorDetails.error || `Falha ao ${method === 'POST' ? 'criar' : 'atualizar'} produto`);
       }
 
       return res.json();
@@ -81,32 +81,32 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success(
-        initialData ? 'Product updated successfully' : 'Product created successfully'
+        initialData ? 'Produto atualizado com sucesso' : 'Produto criado com sucesso'
       );
       form.reset();
       onSuccess?.();
     },
     onError: (error: any) => {
-      console.error(`Error ${initialData ? 'updating' : 'creating'} product:`, error.message);
-      toast.error(error.message || `Failed to ${initialData ? 'update' : 'create'} product`);
+      console.error(`Erro ao ${initialData ? 'atualizar' : 'criar'} produto:`, error.message);
+      toast.error(error.message || `Falha ao ${initialData ? 'atualizar' : 'criar'} produto`);
     },
   });
 
   return (
     <Form {...form}>
       <form
-  onSubmit={form.handleSubmit((data) => {
-    console.log('Form data submitted:', data); // Log dos dados do formulário
-    mutate(data); // Envia os dados para o backend
-  })}
-  className="space-y-4"
->
+        onSubmit={form.handleSubmit((data) => {
+          console.log('Dados enviados pelo formulário:', data);
+          mutate(data);
+        })}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="nome"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -119,7 +119,7 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
           name="descricao"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Descrição</FormLabel>
               <FormControl>
                 <Textarea {...field} />
               </FormControl>
@@ -132,7 +132,7 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
           name="preco"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price</FormLabel>
+              <FormLabel>Preço</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -149,7 +149,7 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
           name="quantidade"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Quantity</FormLabel>
+              <FormLabel>Quantidade</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -166,7 +166,7 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
           name="imagem"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Image URL</FormLabel>
+              <FormLabel>URL da Imagem</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -177,11 +177,11 @@ export function ProductForm({ onSuccess, initialData }: ProductFormProps) {
         <Button type="submit" disabled={isLoading}>
           {isLoading
             ? initialData
-              ? 'Updating...'
-              : 'Creating...'
+              ? 'Atualizando...'
+              : 'Criando...'
             : initialData
-            ? 'Update Product'
-            : 'Create Product'}
+            ? 'Atualizar Produto'
+            : 'Criar Produto'}
         </Button>
       </form>
     </Form>

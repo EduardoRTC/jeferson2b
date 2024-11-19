@@ -23,7 +23,7 @@ import {
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'data',
-    header: 'Date',
+    header: 'Data',
     cell: ({ row }) => {
       const date = row.getValue('data');
       return new Date(date).toLocaleDateString();
@@ -31,7 +31,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'tipo',
-    header: 'Type',
+    header: 'Tipo',
     cell: ({ row }) => {
       const type = row.getValue('tipo') as string;
       return (
@@ -43,14 +43,14 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'produtoId',
-    header: 'Product ID',
+    header: 'ID do Produto',
     cell: ({ row }) => {
       return `#${row.getValue('produtoId')}`;
     },
   },
   {
     accessorKey: 'pedidoId',
-    header: 'Order ID',
+    header: 'ID do Pedido',
     cell: ({ row }) => {
       const orderId = row.getValue('pedidoId');
       return orderId ? `#${orderId}` : 'N/A';
@@ -58,12 +58,12 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'valor',
-    header: 'Amount',
+    header: 'Valor',
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('valor'));
-      const formatted = new Intl.NumberFormat('en-US', {
+      const formatted = new Intl.NumberFormat('pt-BR', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'BRL',
       }).format(amount);
 
       return (
@@ -78,7 +78,7 @@ export const columns: ColumnDef<any>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const transaction = row.original;
-      const queryClient = useQueryClient(); // Utilizado para invalidação de cache
+      const queryClient = useQueryClient(); // Para atualizar os dados
       const [editOpen, setEditOpen] = useState(false);
 
       const deleteTransaction = async (id: number) => {
@@ -88,15 +88,13 @@ export const columns: ColumnDef<any>[] = [
           });
 
           if (!response.ok) {
-            throw new Error(`Failed to delete transaction with ID ${id}`);
+            throw new Error(`Falha ao excluir a transação com ID ${id}`);
           }
 
-          toast.success('Transaction deleted successfully');
-
-          // Invalida a query para atualizar automaticamente os dados
-          queryClient.invalidateQueries(['transactions']);
+          toast.success('Transação excluída com sucesso');
+          queryClient.invalidateQueries(['transactions']); // Atualiza os dados
         } catch (error) {
-          toast.error(`Error deleting transaction: ${error.message}`);
+          toast.error(`Erro ao excluir transação: ${error.message}`);
         }
       };
 
@@ -105,23 +103,26 @@ export const columns: ColumnDef<any>[] = [
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Abrir menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>Ações</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
                   navigator.clipboard.writeText(transaction.id);
-                  toast.success('Transaction ID copied to clipboard');
+                  toast.success('ID da transação copiado');
                 }}
               >
-                Copy ID
+                Copiar ID
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setEditOpen(true)}>Edit Transaction</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => deleteTransaction(transaction.id)}>
-                Delete Transaction
+              <DropdownMenuItem onClick={() => setEditOpen(true)}>Editar Transação</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => deleteTransaction(transaction.id)}
+                className="text-red-600"
+              >
+                Excluir Transação
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -131,7 +132,7 @@ export const columns: ColumnDef<any>[] = [
             <Dialog open={editOpen} onOpenChange={setEditOpen}>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Edit Transaction</DialogTitle>
+                  <DialogTitle>Editar Transação</DialogTitle>
                 </DialogHeader>
                 <TransactionForm
                   initialData={transaction} // Envia os dados da transação para o formulário

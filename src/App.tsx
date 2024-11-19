@@ -25,17 +25,17 @@ function App() {
             <Suspense
               fallback={
                 <div className="h-full flex items-center justify-center">
-                  Loading...
+                  Carregando...
                 </div>
               }
             >
               <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/customers" element={<Customers />} />
-                <Route path="/suppliers" element={<Suppliers />} />
-                <Route path="/transactions" element={<Transactions />} />
+                <Route path="/produtos" element={<Products />} />
+                <Route path="/pedidos" element={<Orders />} />
+                <Route path="/clientes" element={<Customers />} />
+                <Route path="/fornecedores" element={<Suppliers />} />
+                <Route path="/transacoes" element={<Transactions />} />
               </Routes>
             </Suspense>
           </main>

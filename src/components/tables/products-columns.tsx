@@ -15,36 +15,36 @@ export const columns: (
 ) => ColumnDef<any>[] = (handleEditProduct, deleteProduct) => [
   {
     accessorKey: 'nome',
-    header: 'Name',
+    header: 'Nome',
   },
   {
     accessorKey: 'descricao',
-    header: 'Description',
+    header: 'Descrição',
   },
   {
     accessorKey: 'preco',
-    header: 'Price',
+    header: 'Preço',
     cell: ({ row }) => {
       const price = parseFloat(row.getValue('preco'));
-      return new Intl.NumberFormat('en-US', {
+      return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'BRL',
       }).format(price);
     },
   },
   {
     accessorKey: 'quantidade',
-    header: 'Quantity',
+    header: 'Quantidade',
   },
   {
     accessorKey: 'imagem',
-    header: 'Image',
+    header: 'Imagem',
     cell: ({ row }) => {
       const image = row.getValue('imagem');
       return image ? (
         <img src={image} alt={row.getValue('nome')} className="w-12 h-12 object-cover" />
       ) : (
-        <span>No Image</span>
+        <span>Sem Imagem</span>
       );
     },
   },
@@ -54,34 +54,34 @@ export const columns: (
       const product = row.original;
 
       // Verifica os dados do produto
-      console.log('Product data:', product);
+      console.log('Dados do produto:', product);
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => {
                 if (product?.id) {
                   handleEditProduct(product.id);
                 } else {
-                  console.error('Product ID is missing');
+                  console.error('ID do produto está ausente');
                 }
               }}
             >
-              Edit
+              Editar
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => deleteProduct(product.id)}
               className="text-red-600"
             >
-              Delete
+              Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

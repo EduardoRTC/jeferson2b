@@ -39,7 +39,7 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
       email: initialData?.email || '',
       phone: initialData?.contato || '',
       address: initialData?.endereco || '',
-      type: initialData?.tipo || 'individual',
+      type: initialData?.tipo || 'individuo',
     },
   });
 
@@ -67,7 +67,10 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
 
       if (!res.ok) {
         const errorDetails = await res.json();
-        throw new Error(errorDetails.error || `Failed to ${method === 'POST' ? 'create' : 'update'} customer`);
+        throw new Error(
+          errorDetails.error ||
+            `Falha ao ${method === 'POST' ? 'criar' : 'atualizar'} cliente`
+        );
       }
 
       return res.json();
@@ -75,14 +78,22 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customers'] });
       toast.success(
-        initialData ? 'Customer updated successfully' : 'Customer created successfully'
+        initialData
+          ? 'Cliente atualizado com sucesso'
+          : 'Cliente criado com sucesso'
       );
       form.reset();
       onSuccess?.();
     },
     onError: (error: any) => {
-      console.error(`Error ${initialData ? 'updating' : 'creating'} customer:`, error.message);
-      toast.error(error.message || `Failed to ${initialData ? 'update' : 'create'} customer`);
+      console.error(
+        `Erro ao ${initialData ? 'atualizar' : 'criar'} cliente:`,
+        error.message
+      );
+      toast.error(
+        error.message ||
+          `Falha ao ${initialData ? 'atualizar' : 'criar'} cliente`
+      );
     },
   });
 
@@ -94,7 +105,7 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -107,7 +118,7 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
           name="document"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Document (CPF/CNPJ)</FormLabel>
+              <FormLabel>Documento (CPF/CNPJ)</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -133,7 +144,7 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone</FormLabel>
+              <FormLabel>Telefone</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -146,7 +157,7 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>Endereço</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -159,16 +170,16 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
           name="type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Type</FormLabel>
+              <FormLabel>Tipo</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select customer type" />
+                    <SelectValue placeholder="Selecione o tipo de cliente" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="individual">Individual</SelectItem>
-                  <SelectItem value="company">Company</SelectItem>
+                  <SelectItem value="individual">Individuo</SelectItem>
+                  <SelectItem value="company">Empresa</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -178,14 +189,13 @@ export function CustomerForm({ onSuccess, initialData }: CustomerFormProps) {
         <Button type="submit" disabled={isLoading}>
           {isLoading
             ? initialData
-              ? 'Updating...'
-              : 'Creating...'
+              ? 'Atualizando...'
+              : 'Criando...'
             : initialData
-            ? 'Update Customer'
-            : 'Create Customer'}
+            ? 'Atualizar Cliente'
+            : 'Criar Cliente'}
         </Button>
       </form>
     </Form>
   );
 }
-

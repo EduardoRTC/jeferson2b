@@ -23,7 +23,7 @@ export default function Suppliers() {
     queryFn: async () => {
       const res = await fetch('http://localhost:3000/fornecedores');
       if (!res.ok) {
-        throw new Error('Failed to fetch suppliers');
+        throw new Error('Falha ao buscar fornecedores');
       }
       return res.json();
     },
@@ -33,14 +33,14 @@ export default function Suppliers() {
     try {
       const res = await fetch(`http://localhost:3000/fornecedores/${supplierId}`);
       if (!res.ok) {
-        throw new Error('Failed to fetch supplier details');
+        throw new Error('Falha ao buscar detalhes do fornecedor');
       }
 
       const supplier = await res.json();
       setEditSupplier(supplier);
       setOpen(true);
     } catch (error) {
-      console.error('Error fetching supplier details:', error.message);
+      console.error('Erro ao buscar detalhes do fornecedor:', error.message);
     }
   };
 
@@ -48,34 +48,36 @@ export default function Suppliers() {
     mutationFn: async (id: string) => {
       const res = await fetch(`http://localhost:3000/fornecedores/${id}`, { method: 'DELETE' });
       if (!res.ok) {
-        throw new Error('Failed to delete supplier');
+        throw new Error('Falha ao excluir fornecedor');
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['suppliers']);
     },
     onError: (error: any) => {
-      console.error('Failed to delete supplier:', error.message);
+      console.error('Falha ao excluir fornecedor:', error.message);
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading suppliers.</div>;
+  if (isLoading) return <div>Carregando...</div>;
+  if (isError) return <div>Erro ao carregar fornecedores.</div>;
 
   return (
     <div className="p-8 space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Suppliers</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Fornecedores</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => setEditSupplier(null)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Supplier
+              Adicionar Fornecedor
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editSupplier ? 'Edit Supplier' : 'Add Supplier'}</DialogTitle>
+              <DialogTitle>
+                {editSupplier ? 'Editar Fornecedor' : 'Adicionar Fornecedor'}
+              </DialogTitle>
             </DialogHeader>
             <SupplierForm
               initialData={editSupplier}
@@ -87,7 +89,11 @@ export default function Suppliers() {
           </DialogContent>
         </Dialog>
       </div>
-      <DataTable columns={columns(handleEditSupplier, deleteSupplier.mutate)} data={suppliers} searchKey="nome" />
+      <DataTable
+        columns={columns(handleEditSupplier, deleteSupplier.mutate)}
+        data={suppliers}
+        searchKey="nome"
+      />
     </div>
   );
 }

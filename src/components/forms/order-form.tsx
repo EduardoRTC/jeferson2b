@@ -24,17 +24,17 @@ import { useEffect } from "react";
 
 // Schema de validação do formulário
 const orderSchema = z.object({
-  clienteId: z.number().min(1, "Customer is required"),
-  status: z.string().min(1, "Status is required"),
+  clienteId: z.number().min(1, "Cliente é obrigatório"),
+  status: z.string().min(1, "Status é obrigatório"),
   items: z
     .array(
       z.object({
-        produtoId: z.number().min(1, "Product is required"),
-        quantidade: z.number().min(1, "Quantity is required"),
-        precoUnitario: z.number().min(0.01, "Unit price is required"),
+        produtoId: z.number().min(1, "Produto é obrigatório"),
+        quantidade: z.number().min(1, "Quantidade é obrigatória"),
+        precoUnitario: z.number().min(0.01, "Preço unitário é obrigatório"),
       })
     )
-    .min(1, "At least one item is required"),
+    .min(1, "Pelo menos um item é obrigatório"),
 });
 
 type OrderFormData = z.infer<typeof orderSchema>;
@@ -47,9 +47,8 @@ interface OrderFormProps {
 export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
   const queryClient = useQueryClient();
 
-  // Log de depuração para verificar o `initialData`
   useEffect(() => {
-    console.log("Initial Data for Editing:", initialData);
+    console.log("Dados iniciais para edição:", initialData);
   }, [initialData]);
 
   const form = useForm<OrderFormData>({
@@ -66,26 +65,24 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
     name: "items",
   });
 
-  // Fetch valid customers
   const { data: validCustomers = [], isLoading: loadingCustomers } = useQuery({
     queryKey: ["validCustomers"],
     queryFn: async () => {
       const res = await fetch("http://localhost:3000/clientes");
       if (!res.ok) {
-        throw new Error("Failed to fetch customers");
+        throw new Error("Falha ao buscar clientes");
       }
       const data = await res.json();
       return data.clientes || [];
     },
   });
 
-  // Fetch valid products
   const { data: validProducts = [], isLoading: loadingProducts } = useQuery({
     queryKey: ["validProducts"],
     queryFn: async () => {
       const res = await fetch("http://localhost:3000/products");
       if (!res.ok) {
-        throw new Error("Failed to fetch products");
+        throw new Error("Falha ao buscar produtos");
       }
       const data = await res.json();
       return data || [];
@@ -96,48 +93,48 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
     mutationFn: async (values: OrderFormData) => {
       const url = initialData
         ? `http://localhost:3000/pedidos/${initialData.id}`
-        : 'http://localhost:3000/pedidos';
-      const method = initialData ? 'PUT' : 'POST';
+        : "http://localhost:3000/pedidos";
+      const method = initialData ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
       if (!res.ok)
-        throw new Error(`Failed to ${initialData ? 'update' : 'create'} order`);
+        throw new Error(`Falha ao ${initialData ? "atualizar" : "criar"} pedido`);
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['orders']); // Invalida a query ao salvar
-      toast.success(`Order ${initialData ? 'updated' : 'created'} successfully`);
+      queryClient.invalidateQueries(["orders"]);
+      toast.success(
+        `Pedido ${initialData ? "atualizado" : "criado"} com sucesso`
+      );
       form.reset();
-      onSuccess?.(); // Fecha o modal e redefine o formulário
+      onSuccess?.();
     },
     onError: (error) => {
       toast.error(
-        `Failed to ${initialData ? 'update' : 'create'} order: ${error}`
+        `Falha ao ${initialData ? "atualizar" : "criar"} pedido: ${error}`
       );
     },
   });
-  
-  
-  
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          const calculatedTotal = data.items.reduce(
+          const totalCalculado = data.items.reduce(
             (acc, item) => acc + item.quantidade * item.precoUnitario,
             0
           );
-        
-          const valuesToSubmit = {
+
+          const valoresParaSubmissao = {
             ...data,
-            total: calculatedTotal, // Inclui o total no objeto enviado
+            total: totalCalculado,
           };
-        
-          console.log("Data to submit:", valuesToSubmit); // Confirme que o total está correto
-          mutate(valuesToSubmit);
+
+          console.log("Dados para submissão:", valoresParaSubmissao);
+          mutate(valoresParaSubmissao);
         })}
         className="space-y-4"
       >
@@ -146,19 +143,19 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
           name="clienteId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Customer</FormLabel>
+              <FormLabel>Cliente</FormLabel>
               <FormControl>
                 <Select
                   onValueChange={(value) => field.onChange(Number(value))}
                   value={field.value?.toString() || ""}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a customer" />
+                    <SelectValue placeholder="Selecione um cliente" />
                   </SelectTrigger>
                   <SelectContent>
                     {loadingCustomers ? (
                       <SelectItem key="loading" disabled>
-                        Loading customers...
+                        Carregando clientes...
                       </SelectItem>
                     ) : validCustomers.length > 0 ? (
                       validCustomers.map((customer) => (
@@ -171,7 +168,7 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
                       ))
                     ) : (
                       <SelectItem key="no-customers" disabled>
-                        No customers available
+                        Nenhum cliente disponível
                       </SelectItem>
                     )}
                   </SelectContent>
@@ -188,7 +185,7 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
             <FormItem>
               <FormLabel>Status</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Enter order status" />
+                <Input {...field} placeholder="Insira o status do pedido" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -207,7 +204,7 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
                 name={`items.${index}.produtoId`}
                 render={({ field }) => (
                   <FormItem className="w-1/3">
-                    <FormLabel>Product</FormLabel>
+                    <FormLabel>Produto</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
@@ -225,12 +222,12 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
                         value={field.value?.toString() || ""}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a product" />
+                          <SelectValue placeholder="Selecione um produto" />
                         </SelectTrigger>
                         <SelectContent>
                           {loadingProducts ? (
                             <SelectItem key="loading" disabled>
-                              Loading products...
+                              Carregando produtos...
                             </SelectItem>
                           ) : validProducts.length > 0 ? (
                             validProducts.map((product: any) => (
@@ -243,7 +240,7 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
                             ))
                           ) : (
                             <SelectItem key="no-products" disabled>
-                              No products available
+                              Nenhum produto disponível
                             </SelectItem>
                           )}
                         </SelectContent>
@@ -258,7 +255,7 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
                 name={`items.${index}.quantidade`}
                 render={({ field }) => (
                   <FormItem className="w-1/3">
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>Quantidade</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -271,9 +268,11 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
                 )}
               />
               <FormItem className="w-1/3">
-                <FormLabel>Unit Price</FormLabel>
+                <FormLabel>Preço Unitário</FormLabel>
                 <div className="mt-2">
-                  {selectedProduct?.preco ? `$${selectedProduct.preco}` : "N/A"}
+                  {selectedProduct?.preco
+                    ? `R$ ${selectedProduct.preco}`
+                    : "N/A"}
                 </div>
               </FormItem>
               <Button
@@ -281,7 +280,7 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
                 variant="destructive"
                 onClick={() => remove(index)}
               >
-                Remove
+                Remover
               </Button>
             </div>
           );
@@ -292,16 +291,16 @@ export function OrderForm({ onSuccess, initialData }: OrderFormProps) {
             append({ produtoId: 0, quantidade: 1, precoUnitario: 0 })
           }
         >
-          Add Item
+          Adicionar Item
         </Button>
         <Button type="submit" disabled={isLoading}>
           {isLoading
             ? initialData
-              ? "Updating..."
-              : "Creating..."
+              ? "Atualizando..."
+              : "Criando..."
             : initialData
-            ? "Update Order"
-            : "Create Order"}
+            ? "Atualizar Pedido"
+            : "Criar Pedido"}
         </Button>
       </form>
     </Form>

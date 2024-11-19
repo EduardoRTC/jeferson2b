@@ -62,19 +62,29 @@ export function SupplierForm({ onSuccess, initialData }: SupplierFormProps) {
 
       if (!res.ok) {
         const errorDetails = await res.json();
-        throw new Error(errorDetails.error || `Failed to ${method === 'POST' ? 'create' : 'update'} supplier`);
+        throw new Error(
+          errorDetails.error ||
+            `Falha ao ${method === 'POST' ? 'criar' : 'atualizar'} fornecedor`
+        );
       }
 
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['suppliers']);
-      toast.success(initialData ? 'Supplier updated successfully' : 'Supplier created successfully');
+      toast.success(
+        initialData
+          ? 'Fornecedor atualizado com sucesso'
+          : 'Fornecedor criado com sucesso'
+      );
       form.reset();
       onSuccess?.();
     },
     onError: (error: any) => {
-      toast.error(error.message || `Failed to ${initialData ? 'update' : 'create'} supplier`);
+      toast.error(
+        error.message ||
+          `Falha ao ${initialData ? 'atualizar' : 'criar'} fornecedor`
+      );
     },
   });
 
@@ -86,7 +96,7 @@ export function SupplierForm({ onSuccess, initialData }: SupplierFormProps) {
           name="nome"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -112,7 +122,7 @@ export function SupplierForm({ onSuccess, initialData }: SupplierFormProps) {
           name="contato"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contact</FormLabel>
+              <FormLabel>Contato</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -125,7 +135,7 @@ export function SupplierForm({ onSuccess, initialData }: SupplierFormProps) {
           name="endereco"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Address</FormLabel>
+              <FormLabel>Endereço</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -136,11 +146,11 @@ export function SupplierForm({ onSuccess, initialData }: SupplierFormProps) {
         <Button type="submit" disabled={isLoading}>
           {isLoading
             ? initialData
-              ? 'Updating...'
-              : 'Creating...'
+              ? 'Atualizando...'
+              : 'Criando...'
             : initialData
-            ? 'Update Supplier'
-            : 'Create Supplier'}
+            ? 'Atualizar Fornecedor'
+            : 'Criar Fornecedor'}
         </Button>
       </form>
     </Form>

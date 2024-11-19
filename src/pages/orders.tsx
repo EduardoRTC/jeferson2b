@@ -18,30 +18,30 @@ export default function Orders() {
   const [editOrder, setEditOrder] = useState<any>(null);
   const queryClient = useQueryClient();
 
-  // Fetch orders
+  // Buscar pedidos
   const { data: orders, isLoading: ordersLoading } = useQuery({
     queryKey: ['orders'],
     queryFn: async () => {
       const res = await fetch('http://localhost:3000/pedidos');
-      if (!res.ok) throw new Error('Failed to fetch orders');
+      if (!res.ok) throw new Error('Falha ao buscar pedidos');
       const data = await res.json();
-      console.log('Fetched orders:', data); // Log para depuração
+      console.log('Pedidos buscados:', data); // Log para depuração
       return data;
     },
   });
 
-  // Fetch customers
+  // Buscar clientes
   const { data: customersData = [], isLoading: customersLoading } = useQuery({
     queryKey: ['validCustomers'],
     queryFn: async () => {
       const res = await fetch('http://localhost:3000/clientes');
-      if (!res.ok) throw new Error('Failed to fetch customers');
+      if (!res.ok) throw new Error('Falha ao buscar clientes');
       const data = await res.json();
       return data.clientes || []; // Certifique-se de que o formato está correto
     },
   });
 
-  // Combina os dados de pedidos com os nomes dos clientes
+  // Combinar dados de pedidos com os nomes dos clientes
   const ordersWithCustomerNames =
     Array.isArray(orders?.pedidos) && Array.isArray(customersData)
       ? orders.pedidos.map((order: any) => {
@@ -50,16 +50,16 @@ export default function Orders() {
           );
           return {
             ...order,
-            customerName: customer?.nome || 'Unknown', // Use optional chaining para evitar erros
+            customerName: customer?.nome || 'Desconhecido', // Use optional chaining para evitar erros
           };
         })
       : [];
 
-  // Edit order handler
+  // Manipulador de edição de pedido
   const handleEditOrder = async (orderId: string) => {
     const order = orders.pedidos.find((o: any) => o.id === parseInt(orderId));
     if (!order) {
-      console.error("Order not found");
+      console.error("Pedido não encontrado");
       return;
     }
   
@@ -75,43 +75,43 @@ export default function Orders() {
     setOpen(true); // Abre o modal de edição
   };
 
-  // Delete order handler
+  // Manipulador de exclusão de pedido
   const deleteOrder = async (id: string) => {
     try {
       const res = await fetch(`http://localhost:3000/pedidos/${id}`, {
         method: 'DELETE',
       });
-      if (!res.ok) throw new Error('Failed to delete order');
+      if (!res.ok) throw new Error('Falha ao excluir pedido');
       queryClient.invalidateQueries(['orders']);
-      toast.success('Order deleted successfully');
+      toast.success('Pedido excluído com sucesso');
     } catch (error) {
-      toast.error(`Failed to delete order: ${error.message}`);
+      toast.error(`Falha ao excluir pedido: ${error.message}`);
     }
   };
 
-  // Loading state
-  if (ordersLoading || customersLoading) return <div>Loading...</div>;
+  // Estado de carregamento
+  if (ordersLoading || customersLoading) return <div>Carregando...</div>;
 
   return (
     <div className="p-8 space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Pedidos</h2>
         <Button onClick={() => setOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Order
+          Adicionar Pedido
         </Button>
       </div>
       <DataTable
-  columns={columns(handleEditOrder, deleteOrder)}
-  data={ordersWithCustomerNames} // Este array reflete o cache atualizado
-  searchKey="customerName"
-/>
+        columns={columns(handleEditOrder, deleteOrder)}
+        data={ordersWithCustomerNames} // Este array reflete o cache atualizado
+        searchKey="customerName"
+      />
       {open && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {editOrder ? 'Edit Order' : 'Add Order'}
+                {editOrder ? 'Editar Pedido' : 'Adicionar Pedido'}
               </DialogTitle>
             </DialogHeader>
             <OrderForm

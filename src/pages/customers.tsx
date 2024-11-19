@@ -19,13 +19,13 @@ export default function Customers() {
   const [editCustomer, setEditCustomer] = useState(null); // Estado para cliente em edição
   const queryClient = useQueryClient();
 
-  // Fetch customers
+  // Fetch clientes
   const { data: customers, isLoading, isError } = useQuery({
     queryKey: ['customers'],
     queryFn: async () => {
       const res = await fetch('http://localhost:3000/clientes', { method: 'GET' });
       if (!res.ok) {
-        throw new Error('Failed to fetch customers');
+        throw new Error('Falha ao buscar clientes');
       }
       return res.json();
     },
@@ -36,14 +36,14 @@ export default function Customers() {
     try {
       const res = await fetch(`http://localhost:3000/clientes/${customerId}`);
       if (!res.ok) {
-        throw new Error('Failed to fetch customer details');
+        throw new Error('Falha ao buscar detalhes do cliente');
       }
       const customer = await res.json();
       setEditCustomer(customer); // Preenche o estado com os dados completos do cliente
       setOpen(true); // Abre o modal
     } catch (error) {
-      console.error('Error fetching customer details:', error.message);
-      toast.error('Failed to load customer details');
+      console.error('Erro ao buscar detalhes do cliente:', error.message);
+      toast.error('Falha ao carregar os detalhes do cliente');
     }
   };
 
@@ -55,36 +55,36 @@ export default function Customers() {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to delete customer');
+        throw new Error('Falha ao excluir cliente');
       }
 
-      toast.success('Customer deleted successfully');
+      toast.success('Cliente excluído com sucesso');
       queryClient.invalidateQueries(['customers']);
     } catch (error) {
-      console.error('Error deleting customer:', error.message);
-      toast.error('Failed to delete customer');
+      console.error('Erro ao excluir cliente:', error.message);
+      toast.error('Falha ao excluir cliente');
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading customers. Please try again.</div>;
+  if (isLoading) return <div>Carregando...</div>;
+  if (isError) return <div>Erro ao carregar clientes. Tente novamente.</div>;
 
   const customerColumns = columns(handleEditCustomer, deleteCustomer); // Passa as funções para as colunas
 
   return (
     <div className="p-8 space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Customers</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Clientes</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => setEditCustomer(null)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Customer
+              Adicionar Cliente
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editCustomer ? 'Edit Customer' : 'Add Customer'}</DialogTitle>
+              <DialogTitle>{editCustomer ? 'Editar Cliente' : 'Adicionar Cliente'}</DialogTitle>
             </DialogHeader>
             <CustomerForm
               initialData={editCustomer}

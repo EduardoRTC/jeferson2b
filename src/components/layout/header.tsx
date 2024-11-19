@@ -5,7 +5,7 @@ export function Header() {
     <header className="border-b">
       <div className="flex h-16 items-center px-4">
         <Link to="/" className="flex items-center gap-2 font-semibold">
-          Inventory Management
+          Sistema De Inventário
         </Link>
       </div>
     </header>

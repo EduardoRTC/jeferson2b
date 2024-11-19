@@ -21,31 +21,31 @@ export default function Transactions() {
     queryFn: async () => {
       const res = await fetch('http://localhost:3000/transacoes');
       if (!res.ok) {
-        throw new Error('Failed to fetch transactions');
+        throw new Error('Falha ao buscar transações');
       }
       const data = await res.json();
-      console.log('Fetched transactions:', data); // Log para depuração
+      console.log('Transações carregadas:', data); // Log para depuração
       return data.transacoes; // Certifique-se de acessar a propriedade correta
     },
   });
   
-  if (isLoading) return <div>Loading...</div>;
-  if (!transactions.length) return <div>No transactions found</div>;
+  if (isLoading) return <div>Carregando...</div>;
+  if (!transactions.length) return <div>Nenhuma transação encontrada</div>;
 
   return (
     <div className="p-8 space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Transactions</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Transações</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Transaction
+              Adicionar Transação
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add Transaction</DialogTitle>
+              <DialogTitle>Adicionar Transação</DialogTitle>
             </DialogHeader>
             <TransactionForm onSuccess={() => setOpen(false)} />
           </DialogContent>

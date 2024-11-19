@@ -17,11 +17,11 @@ export const columns: (handleEditCustomer: (customerId: string) => void, deleteC
 ) => [
   {
     accessorKey: 'nome',
-    header: 'Name',
+    header: 'Nome',
   },
   {
     accessorKey: 'cpf_cnpj',
-    header: 'Document',
+    header: 'Documento',
   },
   {
     accessorKey: 'email',
@@ -29,16 +29,16 @@ export const columns: (handleEditCustomer: (customerId: string) => void, deleteC
   },
   {
     accessorKey: 'contato',
-    header: 'Phone',
+    header: 'Telefone',
   },
   {
     accessorKey: 'tipo',
-    header: 'Type',
+    header: 'Tipo',
     cell: ({ row }) => {
       const type = row.getValue('tipo') as string;
       return (
-        <Badge variant={type === 'individual' ? 'outline' : 'secondary'}>
-          {type}
+        <Badge variant={type === 'individuo' ? 'outline' : 'secondary'}>
+          {type === 'individuo' ? 'Individuo' : 'Empresa'}
         </Badge>
       );
     },
@@ -52,12 +52,12 @@ export const columns: (handleEditCustomer: (customerId: string) => void, deleteC
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
 
             {/* Editar Cliente */}
             <DropdownMenuItem
@@ -65,7 +65,7 @@ export const columns: (handleEditCustomer: (customerId: string) => void, deleteC
                 handleEditCustomer(customer.id); // Passe apenas o ID para buscar os dados completos
               }}
             >
-              Edit
+              Editar
             </DropdownMenuItem>
 
             {/* Deletar Cliente */}
@@ -75,7 +75,7 @@ export const columns: (handleEditCustomer: (customerId: string) => void, deleteC
               }}
               className="text-red-600"
             >
-              Delete
+              Deletar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

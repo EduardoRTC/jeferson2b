@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, useQueryClient  } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -30,14 +30,14 @@ export default function Products() {
     try {
       const res = await fetch(`http://localhost:3000/products/${productId}`);
       if (!res.ok) {
-        throw new Error('Failed to fetch product details');
+        throw new Error('Falha ao buscar detalhes do produto');
       }
       const product = await res.json();
       setEditProduct(product); // Preenche o estado com os dados completos do produto
       setOpen(true); // Abre o modal
     } catch (error) {
-      console.error('Error fetching product details:', error.message);
-      toast.error('Failed to load product details');
+      console.error('Erro ao buscar detalhes do produto:', error.message);
+      toast.error('Falha ao carregar os detalhes do produto');
     }
   };
 
@@ -47,33 +47,39 @@ export default function Products() {
         method: 'DELETE',
       });
       if (!res.ok) {
-        throw new Error('Failed to delete product');
+        throw new Error('Falha ao excluir o produto');
       }
       queryClient.invalidateQueries(['products']); // Recarrega a lista de produtos
-      toast.success('Product deleted successfully');
+      toast.success('Produto excluído com sucesso');
     } catch (error) {
-      console.error('Error deleting product:', error.message);
-      toast.error('Failed to delete product');
+      console.error('Erro ao excluir o produto:', error.message);
+      toast.error('Falha ao excluir o produto');
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>Carregando...</div>;
 
   return (
     <div className="p-8 space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Products</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Produtos</h2>
         <Button onClick={() => setOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Product
+          Adicionar Produto
         </Button>
       </div>
-      <DataTable columns={columns(handleEditProduct, deleteProduct)} data={products} searchKey="nome" />
+      <DataTable
+        columns={columns(handleEditProduct, deleteProduct)}
+        data={products}
+        searchKey="nome"
+      />
       {open && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editProduct ? 'Edit Product' : 'Add Product'}</DialogTitle>
+              <DialogTitle>
+                {editProduct ? 'Editar Produto' : 'Adicionar Produto'}
+              </DialogTitle>
             </DialogHeader>
             <ProductForm
               initialData={editProduct}

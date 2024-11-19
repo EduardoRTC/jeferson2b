@@ -12,40 +12,40 @@ import { Link, useLocation } from 'react-router-dom';
 
 const routes = [
   {
-    label: 'Overview',
+    label: 'Visão Geral',
     icon: Home,
     href: '/',
     color: 'text-sky-500',
   },
   {
-    label: 'Products',
+    label: 'Produtos',
     icon: Package,
-    href: '/products',
+    href: '/produtos',
     color: 'text-violet-500',
   },
   {
-    label: 'Orders',
+    label: 'Pedidos',
     icon: ShoppingCart,
     color: 'text-pink-700',
-    href: '/orders',
+    href: '/pedidos',
   },
   {
-    label: 'Customers',
+    label: 'Clientes',
     icon: Users,
     color: 'text-orange-700',
-    href: '/customers',
+    href: '/clientes',
   },
   {
-    label: 'Suppliers',
+    label: 'Fornecedores',
     icon: Truck,
     color: 'text-green-700',
-    href: '/suppliers',
+    href: '/fornecedores',
   },
   {
-    label: 'Transactions',
+    label: 'Transações',
     icon: CircleDollarSign,
     color: 'text-emerald-500',
-    href: '/transactions',
+    href: '/transacoes',
   },
 ];
 
